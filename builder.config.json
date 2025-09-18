@@ -1,0 +1,6 @@
+{
+  "command": "npm run dev",
+  "serverUrl": "http://localshot:8080",
+  "authenticateProxy": false,
+  "commitMode": "commits"
+}

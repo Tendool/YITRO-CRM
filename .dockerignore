@@ -1,0 +1,69 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Build outputs (will be generated during build)
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+README.md
+
+# Test files
+coverage/
+*.test.js
+*.test.ts
+test/
+tests/
+
+# Logs
+logs
+*.log
+
+# Cache
+.cache
+.parcel-cache
+
+# Temporary files
+tmp/
+temp/
+
+# Netlify (not needed for Docker)
+netlify/
+netlify.toml
+_redirects
+
+# Development files
+vite-env.d.ts
+check-production-config.js
+setup-production.js
