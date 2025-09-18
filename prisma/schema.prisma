@@ -1,0 +1,215 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AuthUser {
+  id                    String @id @default(cuid())
+  email                 String @unique
+  displayName           String
+  passwordHash          String
+  role                  String @default("user")
+  emailVerified         Boolean @default(false)
+  verificationToken     String?
+  passwordResetToken    String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  lastLogin             DateTime?
+
+  // Relations
+  sessions              AuthSession[]
+  activityLogs          AuthActivityLog[]
+  passwordHistory       AuthPasswordHistory[]
+
+  @@map("auth_users")
+}
+
+model AuthSession {
+  id                    String @id @default(cuid())
+  userId                String
+  tokenHash             String
+  expiresAt             DateTime
+  createdAt             DateTime @default(now())
+  ipAddress             String?
+  userAgent             String?
+  isActive              Boolean @default(true)
+
+  // Relations
+  user                  AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_sessions")
+}
+
+model AuthActivityLog {
+  id                    String @id @default(cuid())
+  userId                String
+  action                String
+  details               String?
+  ipAddress             String?
+  userAgent             String?
+  createdAt             DateTime @default(now())
+
+  // Relations  
+  user                  AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_activity_logs")
+}
+
+model AuthPasswordHistory {
+  id                    String @id @default(cuid())
+  userId                String
+  passwordHash          String
+  createdAt             DateTime @default(now())
+
+  // Relations
+  user                  AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_password_history")
+}
+
+model UserProfile {
+  id                    String @id @default(cuid())
+  firstName             String
+  lastName              String
+  email                 String @unique
+  phone                 String?
+  title                 String?
+  department            String?
+  role                  String? @default("USER")
+  profilePhoto          String?
+  timezone              String?
+  language              String? @default("en")
+  emailNotifications    Boolean @default(true)
+  smsNotifications      Boolean @default(false)
+  pushNotifications     Boolean @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("user_profiles")
+}
+
+model Account {
+  id                    String @id @default(cuid())
+  accountName           String
+  accountRating         String?
+  accountOwner          String?
+  status                String?
+  industry              String?
+  revenue               String?
+  numberOfEmployees     String?
+  addressLine1          String?
+  addressLine2          String?
+  city                  String?
+  state                 String?
+  country               String?
+  zipPostCode           String?
+  timeZone              String?
+  boardNumber           String?
+  website               String?
+  geo                   String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String
+  updatedBy             String
+
+  // Relations
+  contacts              Contact[]
+  deals                 ActiveDeal[]
+
+  @@map("accounts")
+}
+
+model Contact {
+  id                    String @id @default(cuid())
+  firstName             String
+  lastName              String
+  title                 String?
+  associatedAccount     String?
+  emailAddress          String?
+  deskPhone             String?
+  mobilePhone           String?
+  city                  String?
+  state                 String?
+  country               String?
+  timeZone              String?
+  source                String?
+  owner                 String?
+  status                String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String
+  updatedBy             String
+
+  // Relations
+  account               Account? @relation(fields: [associatedAccount], references: [id], onDelete: SetNull)
+  deals                 ActiveDeal[]
+
+  @@map("contacts")
+}
+
+model Lead {
+  id                    String @id @default(cuid())
+  firstName             String
+  lastName              String
+  company               String
+  title                 String?
+  phone                 String?
+  email                 String?
+  leadSource            String?
+  status                String?
+  rating                String?
+  owner                 String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String
+  updatedBy             String
+
+  @@map("leads")
+}
+
+model ActiveDeal {
+  id                    String @id @default(cuid())
+  dealOwner             String?
+  dealName              String
+  businessLine          String?
+  associatedAccount     String?
+  associatedContact     String?
+  closingDate           DateTime?
+  probability           String?
+  dealValue             String?
+  approvedBy            String?
+  description           String?
+  nextStep              String?
+  geo                   String?
+  entity                String?
+  stage                 String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String
+  updatedBy             String
+
+  // Relations
+  account               Account? @relation(fields: [associatedAccount], references: [id], onDelete: SetNull)
+  contact               Contact? @relation(fields: [associatedContact], references: [id], onDelete: SetNull)
+
+  @@map("active_deals")
+}
+
+model ActivityLog {
+  id                    String @id @default(cuid())
+  entityType            String
+  entityId              String
+  action                String
+  changes               String?
+  performedBy           String
+  createdAt             DateTime @default(now())
+
+  @@map("activity_logs")
+}
